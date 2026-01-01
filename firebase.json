@@ -1,0 +1,31 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "tech-mafias",
+          "appId": "1:1023291833256:android:6a5bf5b3a5db9a6afa3b9d",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "tech-mafias",
+          "configurations": {
+            "android": "1:1023291833256:android:6a5bf5b3a5db9a6afa3b9d",
+            "ios": "1:1023291833256:ios:eecede83d664e63cfa3b9d",
+            "macos": "1:1023291833256:ios:eecede83d664e63cfa3b9d",
+            "web": "1:1023291833256:web:837434d109812b09fa3b9d",
+            "windows": "1:1023291833256:web:5ed78cae3f28060bfa3b9d"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "nam5",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}

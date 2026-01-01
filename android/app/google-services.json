@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1023291833256",
+    "project_id": "tech-mafias",
+    "storage_bucket": "tech-mafias.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023291833256:android:6a5bf5b3a5db9a6afa3b9d",
+        "android_client_info": {
+          "package_name": "com.example.techmafias"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK70pNg9NixE-LlM0XpDm1plCj2kBkdio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
