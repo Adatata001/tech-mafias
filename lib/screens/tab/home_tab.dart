@@ -31,6 +31,33 @@ class _HomeTabState extends State<HomeTab> {
     super.dispose();
   }
 
+  Future<void> _refreshDashboard() async {
+  try {
+    final dailyLogProvider = Provider.of<DailyLogProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    await Future.wait<void>([
+      dailyLogProvider.fetchDailyLogs(),
+      authProvider.refreshUserData(),
+    ]);
+
+    if (mounted) {
+      setState(() {});
+    }
+  } catch (e) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Refresh failed: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    // Re-throw to keep the refresh indicator in error state
+    rethrow;
+  }
+}
+
 
   bool get _hasSubmittedToday {
     final dailyLogProvider = Provider.of<DailyLogProvider>(context, listen: false);
@@ -59,6 +86,8 @@ class _HomeTabState extends State<HomeTab> {
         note: _noteController.text.trim(),
         screenshotUrl: _driveLinkController.text.trim(),
       );
+
+      await _refreshDashboard();
 
       _noteController.clear();
       _driveLinkController.clear();
@@ -628,56 +657,59 @@ class _HomeTabState extends State<HomeTab> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _buildUserProfileHeader(),
-            
-            SizedBox(height: 16),
-            
-            if (!_hasSubmittedToday)
-              _buildDailyLogForm()
-            else
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.green[100]!),
-                ),
-                child: Column(
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.green, size: 48),
-                    SizedBox(height: 12),
-                    Text(
-                      'Daily Log Submitted',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green[800],
+      body: RefreshIndicator(
+        onRefresh: _refreshDashboard,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _buildUserProfileHeader(),
+              
+              SizedBox(height: 16),
+              
+              if (!_hasSubmittedToday)
+                _buildDailyLogForm()
+              else
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.green[100]!),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green, size: 48),
+                      SizedBox(height: 12),
+                      Text(
+                        'Daily Log Submitted',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green[800],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'You have already submitted your log for today.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green[700]),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '+20 points awarded to your total score',
-                      style: TextStyle(
-                        color: Colors.green[800],
-                        fontWeight: FontWeight.bold,
+                      SizedBox(height: 8),
+                      Text(
+                        'You have already submitted your log for today.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.green[700]),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 8),
+                      Text(
+                        '+20 points awarded to your total score',
+                        style: TextStyle(
+                          color: Colors.green[800],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            
-            SizedBox(height: 24),
-          ],
+              
+              SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );

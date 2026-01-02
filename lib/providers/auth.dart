@@ -89,7 +89,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   // REFRESH USER DATA
-  void refreshUserData() async {
+  Future<void> refreshUserData() async {
     if (user != null) {
       final userDoc = await FirebaseFirestore.instance
           .collection('users')

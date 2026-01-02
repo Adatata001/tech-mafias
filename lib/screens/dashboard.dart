@@ -173,7 +173,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onPageChanged: (index) => setState(() => _selectedIndex = index),
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            HomeTab(), // Updated to use the new HomeTab
+            HomeTab(),
             LeaderboardTab(),
             ProjectsTab(),
             ProfileTab(),
