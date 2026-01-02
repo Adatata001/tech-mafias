@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:techmafias/providers/auth.dart';
 
-class ProfileTab extends StatefulWidget {
-  const ProfileTab({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<ProfileTab> createState() => _ProfileTabState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileTabState extends State<ProfileTab> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthProvider>(context).user;

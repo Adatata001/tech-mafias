@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:techmafias/providers/daily_log.dart';
 import 'package:techmafias/providers/auth.dart';
-import 'package:techmafias/screens/chat.dart';
+import 'package:techmafias/screens/profile.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -644,16 +644,16 @@ class _HomeTabState extends State<HomeTab> {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.chat),
+            icon: Icon(Icons.person),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatScreen(conversationId: 'global_chat'),
+                  builder: (context) => ProfileScreen(),
                 ),
               );
             },
-            tooltip: 'Chat',
+            tooltip: 'Profile',
           ),
         ],
       ),

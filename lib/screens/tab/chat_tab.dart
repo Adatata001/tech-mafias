@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../providers/chat.dart';
-import '../providers/auth.dart';
-import '../models/users.dart';
+import '../../providers/chat.dart';
+import '../../providers/auth.dart';
+import '../../models/users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatTab extends StatefulWidget {
   final String conversationId;
 
-  const ChatScreen({super.key, required this.conversationId});
+  const ChatTab({super.key, required this.conversationId});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<ChatTab> createState() => _ChatTabState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatTabState extends State<ChatTab> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isSending = false;
@@ -27,8 +27,10 @@ class _ChatScreenState extends State<ChatScreen> {
     _initializeChat();
     _messagesStream = context.read<ChatProvider>().messagesStream(widget.conversationId);
     
+    
     // Scroll to bottom after first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ChatProvider>().markConversationAsRead(widget.conversationId);
       if (_scrollController.hasClients) {
         _scrollController.jumpTo(0);
       }

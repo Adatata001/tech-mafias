@@ -5,9 +5,11 @@ import 'package:techmafias/providers/roadmap.dart';
 import 'package:techmafias/providers/daily_log.dart';
 import 'package:techmafias/screens/tab/leaderboard_tab.dart';
 import 'package:techmafias/screens/tab/project_tab.dart';
-import 'package:techmafias/screens/tab/profile_tab.dart';
+import 'package:techmafias/screens/tab/chat_tab.dart';
 import 'package:techmafias/screens/tab/home_tab.dart';
 import 'package:techmafias/providers/leaderboard.dart';
+import 'package:techmafias/providers/chat.dart';
+import 'package:techmafias/widgets/chat_icon.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -176,7 +178,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             HomeTab(),
             LeaderboardTab(),
             ProjectsTab(),
-            ProfileTab(),
+            Consumer<ChatProvider>(
+              builder: (context, chatProvider, child) {
+                return ChatIconWithBadge(
+                  hasUnreadMessages: chatProvider.hasUnreadMessages,
+                  unreadCount: chatProvider.totalUnreadCount,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatTab(conversationId: 'global_chat'),
+                      ),
+                    );
+                  },
+                );
+              },
+            )
           ],
         ),
       ),
@@ -196,7 +213,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Leaderboard'),
           BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Roadmap'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Profile'),
         ],
       ),
     );
