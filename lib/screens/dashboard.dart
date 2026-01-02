@@ -9,7 +9,6 @@ import 'package:techmafias/screens/tab/chat_tab.dart';
 import 'package:techmafias/screens/tab/home_tab.dart';
 import 'package:techmafias/providers/leaderboard.dart';
 import 'package:techmafias/providers/chat.dart';
-import 'package:techmafias/widgets/chat_icon.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -178,44 +177,102 @@ class _DashboardScreenState extends State<DashboardScreen> {
             HomeTab(),
             LeaderboardTab(),
             ProjectsTab(),
-            Consumer<ChatProvider>(
-              builder: (context, chatProvider, child) {
-                return ChatIconWithBadge(
-                  hasUnreadMessages: chatProvider.hasUnreadMessages,
-                  unreadCount: chatProvider.totalUnreadCount,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatTab(conversationId: 'global_chat'),
-                      ),
-                    );
-                  },
-                );
-              },
-            )
+            ChatTab(conversationId: 'global_chat'),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-            _pageController.jumpToPage(index);
-          });
+      bottomNavigationBar: Consumer<ChatProvider>(
+        builder: (context, chatProvider, _) {
+          return StreamBuilder<List<Map<String, dynamic>>>(
+            stream: chatProvider.userConversations(),
+            builder: (context, snapshot) {
+              int unreadCount = 0;
+
+              if (snapshot.hasData) {
+                final conversations = snapshot.data!;
+                final globalChat = conversations.firstWhere(
+                  (c) => c['id'] == 'global_chat',
+                  orElse: () => {},
+                );
+
+                unreadCount = globalChat['unreadCount'] ?? 0;
+              }
+
+              return BottomNavigationBar(
+                currentIndex: _selectedIndex,
+                onTap: (index) async {
+                  if (index == 3) {
+                    await chatProvider.markConversationAsRead('global_chat');
+                  }
+
+                  setState(() {
+                    _selectedIndex = index;
+                    _pageController.jumpToPage(index);
+                  });
+                },
+                type: BottomNavigationBarType.fixed,
+                selectedItemColor: Colors.deepPurple,
+                unselectedItemColor: Colors.grey,
+                selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  const BottomNavigationBarItem(
+                    icon: Icon(Icons.leaderboard),
+                    label: 'Leaderboard',
+                  ),
+                  const BottomNavigationBarItem(
+                    icon: Icon(Icons.work),
+                    label: 'Roadmap',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        const Icon(Icons.chat),
+                        if (unreadCount > 0)
+                          Positioned(
+                            right: -6,
+                            top: -4,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                unreadCount > 9 ? '9+' : unreadCount.toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    label: 'Chat',
+                  ),
+                ],
+              );
+            },
+          );
         },
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Leaderboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Roadmap'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Profile'),
-        ],
       ),
     );
+  
+
   }
+  
 }

@@ -38,18 +38,10 @@ class _ChatTabState extends State<ChatTab> {
   }
 
   Future<void> _initializeChat() async {
-    final chatProvider = context.read<ChatProvider>();
     final authProvider = context.read<AuthProvider>();
     final currentUser = authProvider.user;
 
     if (currentUser == null) return;
-
-    // Load initial messages
-    try {
-      await chatProvider.loadMessages(widget.conversationId);
-    } catch (e) {
-      print('Error loading messages: $e');
-    }
   }
 
   @override
@@ -65,16 +57,13 @@ class _ChatTabState extends State<ChatTab> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: const Text(
           'Tech Mafias',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           )
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.group),
@@ -91,7 +80,6 @@ class _ChatTabState extends State<ChatTab> {
             child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: _messagesStream,
               builder: (context, snapshot) {
-                // Auto-scroll to top when new messages arrive (since list is reversed)
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (_scrollController.hasClients) {
                     _scrollController.animateTo(
@@ -257,7 +245,6 @@ class _ChatTabState extends State<ChatTab> {
       await chatProvider.sendMessage(
         conversationId: widget.conversationId,
         text: text,
-        senderId: currentUser.id,
         senderName: currentUser.username,
       );
       

@@ -639,6 +639,7 @@ class _HomeTabState extends State<HomeTab> {
             fontWeight: FontWeight.bold,
           )
         ),
+        centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
